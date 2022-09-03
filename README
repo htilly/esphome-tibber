@@ -1,0 +1,12 @@
+Quick hack to get Tibber data displayed on a small LCD display.
+
+Prerequisite:
+HomeAssistant installation =)
+ESPHome enabled
+
+Hardware required:
+ESP32 unit.
+Small LCD display.
+
+Tibber subscription..
+Also, for the second page an Watty or Pulse is required.

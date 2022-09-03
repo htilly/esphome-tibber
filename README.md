@@ -1,18 +1,18 @@
-*** WORK IN PROGRESS ***
+**WORK IN PROGRESS**
 
 Quick hack to get Tibber data displayed on a small LCD display.
 
-*Prerequisite*<br>
+*Prerequisite*  
 HomeAssistant installation =)
 ESPHome enabled
 Tibber subscription..
 Also, for the second page a Watty or Pulse is required.
 
-*Hardware required*<br>
+*Hardware required*  
 ESP32 unit.
 Small LCD display (https://esphome.io/components/display/ssd1306.html)
 
-*Box*<br>
+*Box*  
 .stl files in the repo.
 
 Note, the box was made based on the ESP32 board and LCD I currently had at home.

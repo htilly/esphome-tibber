@@ -6,13 +6,12 @@ Quick hack to get Tibber data displayed on a small LCD display.
 
 
 *Prerequisite*  
-HomeAssistant installation =)
-ESPHome enabled
-Tibber subscription..
-Also, for the second page a Watty or Pulse is required.
+HomeAssistant installation =)  
+ESPHome enabled  
+Tibber subscription..  Also, for the second page a Watty or Pulse is required.
 
 *Hardware required*  
-ESP32 unit.
+ESP32 unit.  
 Small LCD display (https://esphome.io/components/display/ssd1306.html)
 
 *Box*  

@@ -1,0 +1,142 @@
+esphome:
+  name: tibber-display
+
+esp32:
+  board: d1_mini_lite
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "c2b5b7e8f9813c321a2d4625b95d2c97"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Tibber-Display Fallback Hotspot"
+    password: "APgNu49MpbPS"
+
+captive_portal:
+
+i2c:
+    sda: D1
+    scl: D2
+
+font:
+  - file: 'fonts/slkscr.ttf'
+    id: font1
+    size: 8
+
+  - file: 'fonts/BebasNeue-Regular.ttf'
+    id: font2
+    size: 48
+
+  - file: 'fonts/Arial.ttf'
+    id: font3
+    size: 18
+
+time:
+  - platform: homeassistant
+    id: esptime
+
+sensor:
+   - platform: homeassistant
+     id: elpris
+     entity_id: sensor.electricity_price_"REPLACE_ME_WITH_TIBBER_HOMEASSISTANT_DEVICE_NAME"
+     internal: true
+
+   - platform: homeassistant
+     id: max_price
+     entity_id: sensor.electricity_price_"REPLACE_ME_WITH_TIBBER_HOMEASSISTANT_DEVICE_NAME"
+     internal: true
+     attribute: max_price
+
+   - platform: homeassistant
+     id: min_price
+     entity_id: sensor.electricity_price_"REPLACE_ME_WITH_TIBBER_HOMEASSISTANT_DEVICE_NAME"
+     internal: true
+     attribute: min_price
+
+   - platform: homeassistant
+     id: current_power
+     entity_id: sensor.power_"REPLACE_ME_WITH_TIBBER_HOMEASSISTANT_DEVICE_NAME"
+     internal: true
+
+   - platform: homeassistant
+     id: max_power
+     entity_id: sensor.max_power_"REPLACE_ME_WITH_TIBBER_HOMEASSISTANT_DEVICE_NAME"
+     internal: true
+
+   - platform: homeassistant
+     id: min_power
+     entity_id: sensor.min_power_"REPLACE_ME_WITH_TIBBER_HOMEASSISTANT_DEVICE_NAME"
+     internal: true
+
+   - platform: homeassistant
+     id: tibber_graph
+     entity_id: camera."REPLACE_ME_WITH_TIBBER_HOMEASSISTANT_DEVICE_NAME"
+     internal: true
+     attribute: file_path
+
+text_sensor:
+  - platform: homeassistant
+    id: price_level
+    entity_id: sensor.electricity_price_"REPLACE_ME_WITH_TIBBER_HOMEASSISTANT_DEVICE_NAME"
+    attribute: price_level
+
+image:
+  - file: "/config/www/prices_"REPLACE_ME_WITH_TIBBER_HOMEASSISTANT_DEVICE_NAME".png"
+    id: tibber_image
+#    resize: 100x100
+
+display:
+   - platform: ssd1306_i2c
+     model: "SSD1306 128x64"
+     address: 0x3C
+     id: lcd_tibber
+     pages:
+         - id: page1
+           lambda: |-
+             it.printf(0, 0, id(font3), TextAlign::TOP_LEFT, "%s", id(price_level).state.c_str());
+             it.printf(0, 60, id(font2), TextAlign::BASELINE_LEFT, "%.2f", id(elpris).state);
+             it.printf(127, 23, id(font3), TextAlign::TOP_RIGHT , "%.2f", id(max_price).state);
+             it.printf(127, 60, id(font3), TextAlign::BASELINE_RIGHT , "%.2f", id(min_price).state);
+         - id: page2
+           lambda: |-
+             it.printf(0, 0, id(font3), TextAlign::TOP_LEFT, "Consumption");
+             it.printf(0, 60, id(font2), TextAlign::BASELINE_LEFT, "%.f", id(current_power).state);
+             it.printf(127, 23, id(font3), TextAlign::TOP_RIGHT , "%.f", id(max_power).state);
+             it.printf(127, 60, id(font3), TextAlign::BASELINE_RIGHT , "%.f", id(min_power).state);
+         - id: page3
+           lambda: |-
+            it.graph(0, 0, id(multi_tibber_graph));
+         - id: page4
+           lambda: |-
+            it.image(0, 0, id(tibber_image));
+
+interval:
+  - interval: 5s
+    then:
+      - display.page.show_next: lcd_tibber
+      - component.update: lcd_tibber
+
+graph:  # Show multi-trace graph
+  - id: multi_tibber_graph
+    duration: 24h
+#    x_grid: 10min
+#    y_grid: 1.0
+    width: 128
+    height: 64
+    traces:
+      - sensor: current_power
+        line_type: SOLID
+        line_thickness: 3
+      - sensor: elpris
+        line_type: DASHED
+        line_thickness: 2

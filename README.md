@@ -2,6 +2,9 @@
 
 Quick hack to get Tibber data displayed on a small LCD display.
 
+![Tibber LCD Display](https://github.com/htilly/esphome-tibber/blob/main/ESPHome-Tibber.png?raw=true)
+
+
 *Prerequisite*  
 HomeAssistant installation =)
 ESPHome enabled
